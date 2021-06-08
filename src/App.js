@@ -5,7 +5,6 @@ import Board from './components/board';
 import './index.css';
 import './app.css';
 
-
 function generateSoduko() {
   const raw = soduko.makepuzzle();
   const rawResult = soduko.solvepuzzle(raw);
@@ -16,7 +15,7 @@ function generateSoduko() {
     const row = { index: i, cols: [] };
     for (let j = 0; j < 9; j++) {
       const value = (raw[i * 9 + j]);
-      if(!value) emptyCells++;
+      if (value === null) emptyCells++;
       const col = {
         row: i,
         col: j,
@@ -28,7 +27,7 @@ function generateSoduko() {
     }
     rows.push(row);
   }
-  return { rows, rawResult, emptyCells };
+  return { rows, rawResult, emptyCells, remEmptyCells: emptyCells };
 }
 
 function checkConflict(solved, cell) {
@@ -47,21 +46,30 @@ class App extends React.Component {
   }
 
   handleChange = (cell) => {
-    const { rows, rawResult, emptyCells } = this.state;
-    const conflict = checkConflict(rawResult, cell);
-
+    let { rows, rawResult, emptyCells, remEmptyCells } = this.state;
+    const isCellValueEmpty = (cell.value === "");
+    const conflict = isCellValueEmpty ? false : checkConflict(rawResult, cell);
+    console.log(conflict);
+    //temp update cell value
     rows[cell.row].cols[cell.col].value = cell.value;
     rows[cell.row].cols[cell.col].conflict = conflict;
-    //if value is empty
-    emptyCells = cell.value === ""? emptyCells + 1 : emptyCells;
-    //if conflict occured
-    emptyCells = conflict ? emptyCells : emptyCells - 1;
+    rows[cell.row].cols[cell.col].readOnly = isCellValueEmpty ? false : !conflict;
+    console.log(rows[cell.row].cols[cell.col])
+    //update remaining empty cells value
+    if (isCellValueEmpty) {
+      let newEmptyCells = remEmptyCells + 1;
+      remEmptyCells = newEmptyCells <= emptyCells ? newEmptyCells : remEmptyCells;
+    } else {
+      //if conflict occured
+      remEmptyCells = conflict ? remEmptyCells : remEmptyCells - 1;
+    }
+
     this.setState({
       rows: [...rows],
-      emptyCells
+      remEmptyCells
     })
 
-    if(!this.state.emptyCells) {
+    if (!this.state.emptyCells) {
       alert("Hurray you won");
       this.resetSoduko();
     }
@@ -72,7 +80,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Header emptyCell={this.state.emptyCells}/>
+        <Header emptyCell={this.state.remEmptyCells} />
         <Board rows={this.state.rows} onChange={this.handleChange} />
         <button className="block m-auto p-2 bg-blue-600 text-white" onClick={this.resetSoduko}>reset</button>
       </div>
