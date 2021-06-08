@@ -3,7 +3,10 @@ import React from 'react';
 class Cell extends React.Component {
     handleChange = (e) => {
         const value = e.target.value === "" ? "" : parseInt(e.target.value, 10)
-        this.props.onchange({ ...this.props.cell, value });
+        if(value >= 0 && value < 9) {
+            this.props.onchange({ ...this.props.cell, value });
+        }
+        return;
     }
     render() {
         const cellData = this.props.cell;
@@ -16,9 +19,8 @@ class Cell extends React.Component {
 
         return (
             <input
-                type="number"
                 onChange={this.handleChange}
-                value={!isCellValueEmpty ? cellData.value : ""}
+                value={cellData.value !== null ? cellData.value : ""}
                 className={styles}
                 readOnly={cellData.readOnly} />
         );

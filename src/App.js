@@ -38,6 +38,17 @@ function checkConflict(solved, cell) {
   return true;
 }
 
+function trackEmptyCells(emptyCells, remEmptyCells, isCellValueEmpty) {
+  //update remaining empty cells value
+  if (isCellValueEmpty) {
+    let newEmptyCells = remEmptyCells + 1;
+    remEmptyCells = newEmptyCells <= emptyCells ? newEmptyCells : remEmptyCells;
+  } else {
+    remEmptyCells -= 1;
+  }
+  return remEmptyCells;
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -55,14 +66,8 @@ class App extends React.Component {
     rows[cell.row].cols[cell.col].conflict = conflict;
     rows[cell.row].cols[cell.col].readOnly = isCellValueEmpty ? false : !conflict;
     console.log(rows[cell.row].cols[cell.col])
-    //update remaining empty cells value
-    if (isCellValueEmpty) {
-      let newEmptyCells = remEmptyCells + 1;
-      remEmptyCells = newEmptyCells <= emptyCells ? newEmptyCells : remEmptyCells;
-    } else {
-      //if conflict occured
-      remEmptyCells = conflict ? remEmptyCells : remEmptyCells - 1;
-    }
+    
+    remEmptyCells = trackEmptyCells(emptyCells, remEmptyCells, isCellValueEmpty)
 
     this.setState({
       rows: [...rows],
