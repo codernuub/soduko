@@ -52,12 +52,15 @@ class App extends React.Component {
 
     rows[cell.row].cols[cell.col].value = cell.value;
     rows[cell.row].cols[cell.col].conflict = conflict;
-
+    //if value is empty
+    emptyCells = cell.value === ""? emptyCell + 1 : emptyCell;
+    //if conflict occured
+    emptyCells = conflict ? emptyCells : emptyCells - 1;
     this.setState({
       rows: [...rows],
-      emptyCells: conflict ? emptyCells : emptyCells - 1
+      emptyCell
     })
-    
+
     if(!this.state.emptyCells) {
       alert("Hurray you won");
       this.resetSoduko();
