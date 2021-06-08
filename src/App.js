@@ -53,12 +53,12 @@ class App extends React.Component {
     rows[cell.row].cols[cell.col].value = cell.value;
     rows[cell.row].cols[cell.col].conflict = conflict;
     //if value is empty
-    emptyCells = cell.value === ""? emptyCell + 1 : emptyCell;
+    emptyCells = cell.value === ""? emptyCells + 1 : emptyCells;
     //if conflict occured
     emptyCells = conflict ? emptyCells : emptyCells - 1;
     this.setState({
       rows: [...rows],
-      emptyCell
+      emptyCells
     })
 
     if(!this.state.emptyCells) {
