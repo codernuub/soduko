@@ -7,17 +7,17 @@ class Cell extends React.Component {
     }
     render() {
         const cellData = this.props.cell;
+
         let styles = "flex w-5 h-5 m-1 text-center border-black border-2 "
         let bgColor = "";
-
-        bgColor = cellData.value ? "bg-yellow-300" : "";
+        bgColor = cellData.value !== "" ? "bg-yellow-300" : "";
         bgColor = cellData.value && cellData.conflict ? "bg-red-500" : bgColor;
-        
         styles += bgColor;
+        
         return (
             <input 
             onChange={this.handleChange} 
-            value={cellData.value ? cellData.value : ""} 
+            value={cellData.value !== "" ? cellData.value : ""} 
             className={styles}
             readOnly={cellData.readOnly} />
         );
