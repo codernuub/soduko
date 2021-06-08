@@ -1,9 +1,10 @@
+import React from 'react';
+import soduko from 'sudoku';
 import Header from './components/header';
 import Board from './components/board';
 import './index.css';
 import './app.css';
-import soduko from 'sudoku';
-import React from 'react';
+
 
 function generateSoduko() {
   const raw = soduko.makepuzzle();
@@ -46,12 +47,11 @@ class App extends React.Component {
   }
 
   handleChange = (cell) => {
-    const newRowState = this.state.soduko.rows;
-    const solvedPuzzle = this.state.soduko.rawResult;
-    newRowState[cell.row].cols[cell.col].value = cell.value;
-    newRowState[cell.row].cols[cell.col].conflict = checkConflict(solvedPuzzle, cell);
+    const { rows, rawResult } = this.state.soduko;
+    rows[cell.row].cols[cell.col].value = cell.value;
+    rows[cell.row].cols[cell.col].conflict = checkConflict(rawResult, cell);
     this.setState({
-      rows: [...newRowState]
+      rows: [...rows]
     })
   }
 
