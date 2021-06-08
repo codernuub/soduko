@@ -2,9 +2,8 @@ import React from 'react';
 import Header from './components/header';
 import Board from './components/board';
 import './index.css';
-import './app.css';
 
-import {generateSoduko, checkConflict, trackEmptyCells} from './lib/sodukoBoard';
+import { generateSoduko, checkConflict } from './lib/sodukoBoard';
 
 class App extends React.Component {
   constructor(props) {
@@ -14,36 +13,36 @@ class App extends React.Component {
   }
 
   handleChange = (cell) => {
-    let { rows, rawResult, emptyCells, remEmptyCells } = this.state;
+    let { rows, rawResult, emptyCells } = this.state;
     const isCellValueEmpty = (cell.value === "");
     const conflict = isCellValueEmpty ? false : checkConflict(rawResult, cell);
-    console.log(conflict);
-    //temp update cell value
-    rows[cell.row].cols[cell.col].value = cell.value;
-    rows[cell.row].cols[cell.col].conflict = conflict;
-    rows[cell.row].cols[cell.col].readOnly = isCellValueEmpty ? false : !conflict;
+    const currentCell = rows[cell.row].cols[cell.col];
 
-    remEmptyCells = trackEmptyCells(emptyCells, remEmptyCells, isCellValueEmpty)
+    //update empty cells
+    if (!currentCell.conflict) {
+      emptyCells -= conflict ? 0 : 1;
+    }
+
+    //temp update cell value
+    currentCell.value = cell.value;
+    currentCell.conflict = conflict;
+    currentCell.readOnly = isCellValueEmpty ? false : !conflict;
 
     this.setState({
       rows: [...rows],
-      remEmptyCells
+      emptyCells,
     })
-
-    if (!this.state.emptyCells) {
-      alert("Hurray you won");
-      this.resetSoduko();
-    }
   }
 
   resetSoduko = () => this.setState({ ...generateSoduko() });
 
   render() {
+
     return (
       <div className="App">
-        <Header emptyCell={this.state.remEmptyCells} />
+        <Header emptyCell={this.state.emptyCells} />
         <Board rows={this.state.rows} onChange={this.handleChange} />
-        <button className="block m-auto p-2 bg-blue-600 text-white" onClick={this.resetSoduko}>reset</button>
+        <button className="block m-auto my-4 rounded-lg px-6 py-1 bg-blue-600 text-white" onClick={this.resetSoduko}>Reset</button>
       </div>
     );
   }

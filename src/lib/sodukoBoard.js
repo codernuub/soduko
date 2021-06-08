@@ -22,23 +22,11 @@ export function generateSoduko() {
         }
         rows.push(row);
     }
-    return { rows, rawResult, emptyCells, remEmptyCells: emptyCells };
+    return { rows, rawResult, emptyCells };
 }
 
 export function checkConflict(solved, cell) {
     const correctValue = solved[cell.row * 9 + cell.col];
-    if (correctValue === cell.value) {
-        return false;
-    }
+    if (correctValue === cell.value) return false;
     return true;
-}
-
-export function trackEmptyCells(emptyCells, remEmptyCells, isCellValueEmpty){
-    if (isCellValueEmpty) {
-        let newEmptyCells = remEmptyCells + 1;
-        remEmptyCells = newEmptyCells <= emptyCells ? newEmptyCells : remEmptyCells;
-    } else {
-        remEmptyCells -= 1;
-    }
-    return remEmptyCells;
 }
