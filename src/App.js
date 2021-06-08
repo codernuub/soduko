@@ -30,7 +30,10 @@ function generateSoduko() {
 }
 
 function checkConflict(solved, cell) {
-  const correctValue = solved[cell.row * cell.col];
+  console.log(cell)
+  const correctValue = solved[cell.row * 9 + cell.col];
+  console.log(correctValue);
+  console.log(cell.value);
   if (correctValue === cell.value) {
     return false;
   }
@@ -57,7 +60,7 @@ class App extends React.Component {
 
   resetSoduko = () => {
     this.setState({
-      rows: generateSoduko()
+      soduko: generateSoduko()
     })
   }
 
